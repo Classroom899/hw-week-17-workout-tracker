@@ -19,10 +19,10 @@ app.use(express.json());
 
 app.use(express.static("public"));
 
-console.log(process.env.MONGODB_URI )
+// console.log(process.env.MONGODB_URI )
 mongoose.connect(process.env.MONGODB_URI || "mongodb://localhost:27017/workout", {
   useNewUrlParser: true
-}).then(data => console.log(data)).catch(error => console.log(error));
+}).then(data => console.log("Data")).catch(error => console.log("Hello World"));
 
 app.get("/", (req, res) => {
   res.sendFile(path.join(__dirname, "./Develop/public/index.html"));
@@ -44,15 +44,18 @@ app.get("/style.css", (req, res) => {
   res.sendFile(path.join(__dirname, "./Develop/public/style.css"));
 })
 
-app.put("/api/workouts(/*)?", (req, res) => { // .* = to recognize any single character at any time
-  const workoutID = req.url.split("/").pop()
+app.put("/api/workouts/:id", (req, res) => {
+  const workoutID = req.params.id
   const exercise = { ...req.body, id: new mongodbID() }
-  console.log(exercise);
-  console.log(workoutID);
-  WorkoutPlan.findById(workoutID).then(
-    workout => workout.exercises.push(exercise)
+  console.log(req.params.id);
+  console.log(req.body);
+  // console.log(workoutID);
+  WorkoutPlan.findByIdAndUpdate(workoutID, {$push: {exercises: req.body}}, {new : true}).then(
+    data => console.log(data)
+    // console.log(workout.exercises.push(exercise)));
+    // workout => workout.exercises.push(exercise)
   ).catch(error => res.json(error))
-});
+})
 
 app.get("/api/workouts/range", (req, res) => {
   WorkoutPlan.find({})
@@ -85,6 +88,7 @@ app.get("/api/workouts", (req, res) => {
 });
 
 app.post("/api/workouts", (req, res) => {
+  console.log("Route hit");
   const ObjectID = new mongodbID();
   WorkoutPlan.create({ _id: ObjectID, exercises: [] }).then(data => {
     return res.json({ _id: ObjectID });
