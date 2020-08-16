@@ -67,13 +67,8 @@ app.get("/api/workouts/range", (req, res) => {
 app.get("/api/workouts", (req, res) => {
   WorkoutPlan.find({})
     .then(workout => {
-      // if (workout.exercises && workout.exercises.length) {
-      //   console.log(workout)
       console.log(workout)
         res.json(workout)
-      // } else {
-      //   res.json([])
-      // }
       ;
     })
     .catch(err => {
