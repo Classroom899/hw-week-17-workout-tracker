@@ -51,7 +51,7 @@ app.put("/api/workouts/:id", (req, res) => {
   console.log(req.body);
   // console.log(workoutID);
   WorkoutPlan.findByIdAndUpdate(workoutID, {$push: {exercises: req.body}}, {new : true}).then(
-    data => console.log(data)
+    data => res.json(data)
     // console.log(workout.exercises.push(exercise)));
     // workout => workout.exercises.push(exercise)
   ).catch(error => res.json(error))
