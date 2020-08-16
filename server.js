@@ -8,8 +8,6 @@ const app = express();
 const PORT = process.env.PORT || 3000;
 
 const WorkoutPlan = require("./models/workout");
-const CardioModel = require("./models/cardio");
-// const ExerciseModel = require("./models/exercise")
 const { response } = require("express");
 
 app.use(logger("dev"));
@@ -19,7 +17,6 @@ app.use(express.json());
 
 app.use(express.static("public"));
 
-// console.log(process.env.MONGODB_URI )
 mongoose.connect(process.env.MONGODB_URI || "mongodb://localhost:27017/workout", {
   useNewUrlParser: true
 }).then(data => console.log("Data")).catch(error => console.log("Hello World"));
@@ -46,13 +43,8 @@ app.get("/style.css", (req, res) => {
 
 app.put("/api/workouts/:id", (req, res) => {
   const workoutID = req.params.id
-  const exercise = { ...req.body, id: new mongodbID() }
-  console.log(req.params.id);
-  console.log(req.body);
-  // console.log(workoutID);
   WorkoutPlan.findByIdAndUpdate(workoutID, {$push: {exercises: req.body}}, {new : true}).then(
     data => res.json(data)
-    // console.log(workout.exercises.push(exercise)));
     // workout => workout.exercises.push(exercise)
   ).catch(error => res.json(error))
 })
@@ -75,11 +67,13 @@ app.get("/api/workouts/range", (req, res) => {
 app.get("/api/workouts", (req, res) => {
   WorkoutPlan.find({})
     .then(workout => {
-      if (workout.exercises && workout.exercises.length) {
-        res.json(workout.exercises)
-      } else {
-        res.json([])
-      }
+      // if (workout.exercises && workout.exercises.length) {
+      //   console.log(workout)
+      console.log(workout)
+        res.json(workout)
+      // } else {
+      //   res.json([])
+      // }
       ;
     })
     .catch(err => {
