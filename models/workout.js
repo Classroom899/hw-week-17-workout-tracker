@@ -1,18 +1,28 @@
 const mongoose = require("mongoose");
 
 const Schema = mongoose.Schema;
+const opts = { toJSON: { virtuals: true } };
 
 const WorkoutPlan = new Schema({
-  day: {type: Date,
-  default: Date.now},
+  day: {
+    type: Date,
+    default: Date.now
+  },
   exercises: [Schema.Types.Mixed], // Allows mixed types
+
+}, opts);
+
+
+
+WorkoutPlan.virtual('totalDuration').get(function () { // Calling the virtual method on the schema method
+  // console.log('totalDuration');
+  const totalDuration = this.exercises.reduce(function(prev, cur) {
+    return prev + cur.duration;
+  }, 0);
+return totalDuration;
 });
 
-WorkoutPlan.virtual('totalDuration').get(function() {
-  return "emily";
-});
-
-// Find an example from class using virtual and check mongoose first to see that it is there
+// Find an example from class using virtual ---
 
 // Whenever I add a record into this model, that we are inputting the correct id
 
