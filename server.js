@@ -43,7 +43,7 @@ app.get("/style.css", (req, res) => {
 
 app.put("/api/workouts/:id", (req, res) => {
   const workoutID = req.params.id
-  WorkoutPlan.findByIdAndUpdate(workoutID, {$push: {exercises: req.body}}, {new : true}).then(
+  WorkoutPlan.findByIdAndUpdate(workoutID, { $push: { exercises: req.body } }, { new: true }).then(
     data => res.json(data)
     // workout => workout.exercises.push(exercise)
   ).catch(error => res.json(error))
@@ -51,25 +51,30 @@ app.put("/api/workouts/:id", (req, res) => {
 
 app.get("/api/workouts/range", (req, res) => {
   WorkoutPlan.find({})
-  .then(workout => {
-    if (workout.exercises && workout.exercises.length) {
-      res.json(workout.exercises)
-    } else {
-      res.json([])
-    }
-    ;
-  })
-  .catch(err => {
-    res.json(err);
-  });
+    .then(workouts => {
+      // console.log("Hello All", workouts)
+      dataWorkouts = [];
+      for (let i = 0; i < workouts.length; i++) {
+        let workout = workouts[i]; 
+        console.log(workout.exercises.length);
+        if (workout.exercises.length > 0) {
+          dataWorkouts.push(workout)
+        }
+      } 
+      // console.log("Is it Friday yet?")
+      res.json(dataWorkouts)
+    })
+    .catch(err => {
+      res.json(err);
+    });
 });
 
 app.get("/api/workouts", (req, res) => {
   WorkoutPlan.find({})
     .then(workout => {
-      console.log(workout)
-        res.json(workout)
-      ;
+      // console.log(workout)
+      res.json(workout)
+        ;
     })
     .catch(err => {
       res.json(err);
